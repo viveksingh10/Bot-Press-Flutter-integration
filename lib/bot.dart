@@ -14,6 +14,7 @@ class _Bot extends State<Bot> {
   String botName = "Loki";
   String userName = "You";
   final List<ChatMessage> _messages = <ChatMessage>[];
+  List<dynamic> btnlist = <dynamic>[];
   final TextEditingController _textController = new TextEditingController();
 
   void _handleSubmitted(String text) async {
@@ -29,6 +30,27 @@ class _Bot extends State<Bot> {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 fontSize: 25.0)));
+  }
+
+  Widget dynamicChips() {
+    return Wrap(
+      spacing: 6.0,
+      runSpacing: 6.0,
+      children: List<Widget>.generate(btnlist.length, (int index) {
+        return FlatButton(
+          hoverColor: Colors.green,
+          focusColor: Colors.red,
+          color: Colors.deepPurple[200],
+          child: Text(btnlist[index]),
+          onPressed: () async {
+            _handleSubmitted(btnlist[index]);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+        );
+      }),
+    );
   }
 
   @override
@@ -81,6 +103,9 @@ class _Bot extends State<Bot> {
                   : loadingBotPress()),
           new Divider(height: 1.0),
           new Container(
+            child: dynamicChips(),
+          ),
+          new Container(
             decoration: new BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFFAD9FE4), Palette.primaryColor],
@@ -127,9 +152,18 @@ class _Bot extends State<Bot> {
 
   void getDataFromBotpress(String msg) async {
     List<dynamic> data = await requestBotPressServer(msg);
+    btnlist.clear();
     for (var i = 0; i < data.length; i++) {
       if (data[i]['type'] == "text") {
         createAndInsertMessage(data[i]['text'], botName);
+      }
+      if (data[i]['type'] == "custom") {
+        List<dynamic> buttonlist = data[i]["quick_replies"];
+        for (var j = 0; j < buttonlist.length; j++) {
+          if (buttonlist[j]['title'] != "Reset") {
+            btnlist.add(buttonlist[j]['title']);
+          }
+        }
       }
     }
   }
