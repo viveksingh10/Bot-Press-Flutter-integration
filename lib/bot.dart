@@ -18,6 +18,7 @@ class _Bot extends State<Bot> {
   final TextEditingController _textController = new TextEditingController();
 
   void _handleSubmitted(String text) async {
+    btnlist.clear();
     _textController.clear();
     createAndInsertMessage(text, userName);
     getDataFromBotpress(text);

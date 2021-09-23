@@ -6,7 +6,7 @@ class ChatMessage extends StatelessWidget {
   final bool type;
   ChatMessage({required this.text, required this.name, required this.type});
   Widget otherMessage(context) {
-    String url = 'https://virtusa-bot.herokuapp.com/';
+    String url = 'https://boiling-wildwood-11010.herokuapp.com/';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
